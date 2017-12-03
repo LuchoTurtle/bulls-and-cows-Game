@@ -2,8 +2,8 @@
 
 Pretty much what it is. To those that *aren't* aware of this word game, here's a quick rundown:
 
- * The game generates a random word each turn.
- * The player's duty is to try and guess the word. 
+ * The game generates a random word each turn (an *isogram*).
+ * The player's duty is to try and guess the word.
 
 Pretty simple, right? So, how does the player knows he's got the word spot-on? He has *clues* throughout in the form of **bulls** and **cows**. *But how does this work*? Here's an example:
 

@@ -44,14 +44,14 @@ void PlayGame() {
 	int32 MaxTries = BCGame.GetMaxTries();
 
 	//loop for the number of turns asking for guesses
-	//change from FOR to WHILE loop once we are validating tries
-	constexpr int32 NUMBER_OF_TURNS = 5;
+	for (int32 i = 0; i < MaxTries; i++) {	//TODO change from FOR to WHILE loop once we are validating tries
+		FText Guess = GetGuess(); 
 
-	for (int32 i = 0; i < NUMBER_OF_TURNS; i++) {
-		FText Guess = GetGuess(); //TODO make check for valid guesses
+		EGuessStatus Status = BCGame.CheckGuessValidity(Guess);
 
 		//submit valid guess to the game and receive counts
 		FBullCowCount BullCowCount = BCGame.SubmitGuess(Guess);
+
 		//Print number of bulls and cows
 		std::cout << "Bulls = "  << BullCowCount.Bulls;
 		std::cout << ". Cows = " << BullCowCount.Cows << std::endl ;
@@ -72,7 +72,8 @@ bool AskToPlayAgain() {
 	return (Response[0] == 'y') || (Response[0] == 'Y');
 }
 
-FText GetGuess() {
+FText GetGuess() //TODO change to getValidGuess
+{
 
 	std::cout << "Try " << BCGame.GetCurrentTry() << std::endl;
 	
