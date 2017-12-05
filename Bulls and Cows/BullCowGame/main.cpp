@@ -33,7 +33,7 @@ int main() {
 
 void PrintIntro() {
 	//Introduce the game
-	std::cout << "Welcome to Bulls and Cows, lads\n";
+	std::cout << "\n\nWelcome to Bulls and Cows, lads\n";
 	std::cout << "Can you guess the " << BCGame.GetHiddenWordLength() << " letter isogram I'm thinking of?\n";
 
 	return;
@@ -43,8 +43,9 @@ void PlayGame() {
 	BCGame.Reset();
 	int32 MaxTries = BCGame.GetMaxTries();
 
-	//loop for the number of turns asking for guesses
-	for (int32 i = 0; i < MaxTries; i++) {	//TODO change from FOR to WHILE loop once we are validating tries
+	//loop for the guess while the game is not won
+	//and there are still tries remaining
+	while(!BCGame.IsGameWon() && BCGame.GetCurrentTry() <= MaxTries) {	//TODO change from FOR to WHILE loop once we are validating tries
 		FText Guess = GetValidGuess(); 
 
 		//submit valid guess to the game and receive counts
@@ -55,6 +56,7 @@ void PlayGame() {
 		std::cout << ". Cows = " << BullCowCount.Cows << "\n";
 
 	}
+
 
 	//TODO add a game summary
 
@@ -77,7 +79,7 @@ FText GetValidGuess()
 	do {
 		//get a guess from the player
 		int32 CurrentTry = BCGame.GetCurrentTry();
-		std::cout << "Try " << CurrentTry << "\n";
+		std::cout << "\nTry " << CurrentTry << "\n";
 
 		std::cout << "Enter your guess: ";
 		std::getline(std::cin, Guess);
