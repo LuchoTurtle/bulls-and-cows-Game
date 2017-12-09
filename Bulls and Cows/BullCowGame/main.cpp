@@ -34,9 +34,17 @@ int main() {
 
 void PrintIntro() {
 	//Introduce the game
-	std::cout << "\n\nWelcome to Bulls and Cows, lads\n";
-	std::cout << "Can you guess the " << BCGame.GetHiddenWordLength() << " letter isogram I'm thinking of?\n";
-
+	std::cout << "Welcome to Bulls and Cows, a fun word game.\n";
+	std::cout << std::endl;
+	std::cout << "          }   {         ___ " << std::endl;
+	std::cout << "          (o o)        (o o) " << std::endl;
+	std::cout << "   /-------\\ /          \\ /-------\\ " << std::endl;
+	std::cout << "  / | BULL |O            O| COW  | \\ " << std::endl;
+	std::cout << " *  |-,--- |              |------|  * " << std::endl;
+	std::cout << "    ^      ^              ^      ^ " << std::endl;
+	std::cout << "Can you guess the " << BCGame.GetHiddenWordLength();
+	std::cout << " letter isogram I'm thinking of?\n";
+	std::cout << std::endl;
 	return;
 }
 
@@ -81,7 +89,7 @@ FText GetValidGuess()
 	do {
 		//get a guess from the player
 		int32 CurrentTry = BCGame.GetCurrentTry();
-		std::cout << "\nTry " << CurrentTry << "\n";
+		std::cout << "\nTry " << CurrentTry << " of " << BCGame.GetMaxTries() << std::endl;
 
 		std::cout << "Enter your guess: ";
 		std::getline(std::cin, Guess);
@@ -89,19 +97,18 @@ FText GetValidGuess()
 	 Status = BCGame.CheckGuessValidity(Guess);
 		switch (Status) {
 		case EGuessStatus::Wrong_Length:
-			std::cout << "Please enter a " << BCGame.GetHiddenWordLength() << " letter word.\n";
+			std::cout << "Please enter a " << BCGame.GetHiddenWordLength() << " letter word.\n\n";
 			break;
 		case EGuessStatus::Not_Isogram:
-			std::cout << "Please enter an isogram word.\n";
+			std::cout << "Please enter an isogram word.\n\n";
 			break;
 		case EGuessStatus::Not_Lowercase:
-			std::cout << "Please enter a lowercase word.\n";
+			std::cout << "Please enter a lowercase word.\n\n";
 			break;
 		default:
 			//assume the guess is valid
 			break;
 		}
-		std::cout << std::endl;
 	} while (Status != EGuessStatus::OK); //keep looping until we get a valid input
 	return Guess;
 
