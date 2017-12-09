@@ -14,12 +14,13 @@ void PlayGame();
 bool AskToPlayAgain();
 FText GetValidGuess();
 void PrintGameSummary();
+int32 GetValidUserWordLength();
 
 FBullCowGame BCGame;	//instantiate a new game
 
 //the entry point for our application
 int main() {
-	
+
 	bool bPlayAgain = false;
 	do {
 		PrintIntro();
@@ -42,6 +43,7 @@ void PrintIntro() {
 	std::cout << "  / | BULL |O            O| COW  | \\ " << std::endl;
 	std::cout << " *  |-,--- |              |------|  * " << std::endl;
 	std::cout << "    ^      ^              ^      ^ " << std::endl;
+
 	std::cout << "Can you guess the " << BCGame.GetHiddenWordLength();
 	std::cout << " letter isogram I'm thinking of?\n";
 	std::cout << std::endl;
@@ -49,31 +51,32 @@ void PrintIntro() {
 }
 
 void PlayGame() {
-	BCGame.Reset();
+
+	int32 WordLength = GetValidUserWordLength();
+	BCGame.Reset(WordLength);
+
 	int32 MaxTries = BCGame.GetMaxTries();
 
 	//loop for the guess while the game is not won
 	//and there are still tries remaining
-	while(!BCGame.IsGameWon() && BCGame.GetCurrentTry() <= MaxTries) {
-		FText Guess = GetValidGuess(); 
+	while (!BCGame.IsGameWon() && BCGame.GetCurrentTry() <= MaxTries) {
+		FText Guess = GetValidGuess();
 
 		//submit valid guess to the game and receive counts
 		FBullCowCount BullCowCount = BCGame.SubmitValidGuess(Guess);
 
 		//Print number of bulls and cows
-		std::cout << "Bulls = "  << BullCowCount.Bulls;
+		std::cout << "Bulls = " << BullCowCount.Bulls;
 		std::cout << ". Cows = " << BullCowCount.Cows << "\n";
 
 	}
 
-
-	//TODO add a game summary
 	PrintGameSummary();
 	return;
 }
 
 bool AskToPlayAgain() {
-	std::cout << "Do you want to play again with the same word? (y/n)";
+	std::cout << "Do you want to play again? (y/n)";
 	FText Response = "";
 	std::getline(std::cin, Response);
 
@@ -94,7 +97,7 @@ FText GetValidGuess()
 		std::cout << "Enter your guess: ";
 		std::getline(std::cin, Guess);
 
-	 Status = BCGame.CheckGuessValidity(Guess);
+		Status = BCGame.CheckGuessValidity(Guess);
 		switch (Status) {
 		case EGuessStatus::Wrong_Length:
 			std::cout << "Please enter a " << BCGame.GetHiddenWordLength() << " letter word.\n\n";
@@ -124,3 +127,36 @@ void  PrintGameSummary() {
 
 	return;
 }
+
+//gets valid word length from user
+int32 GetValidUserWordLength()
+{
+	EWordLengthInputStatus WordLengthStatus = EWordLengthInputStatus::Invalid_Status;
+	FString Input = "";
+	int32 Length = 0;
+
+	do {
+		std::cout << "Please, enter your desirable word length.\n";
+		std::getline(std::cin, Input);
+
+		WordLengthStatus = BCGame.CheckWordLengthValidity(Input);
+		switch (WordLengthStatus) {
+		case EWordLengthInputStatus::Empty:
+			std::cout << "Don't enter an empty string.\n\n";
+			break;
+		case EWordLengthInputStatus::Not_number:
+			std::cout << "Please enter a number, not words.\n\n";
+			break;
+		case EWordLengthInputStatus::Out_of_bounds_number:
+			std::cout << "Please enter a number between 3 and 7, these included.\n\n";
+			break;
+		default:
+			//assume the guess is valid
+			Length = std::stoi(Input);
+			break;
+		}
+	} while (WordLengthStatus != EWordLengthInputStatus::OK); //keep looping until we get a valid input
+
+	return Length;
+}
+

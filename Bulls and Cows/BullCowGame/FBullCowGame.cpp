@@ -1,30 +1,69 @@
 #include "FBullCowGame.h"
 #include <map>
 #define TMap std::map
+#define DEFAULT_WORD_LENGTH 3
 
-FBullCowGame::FBullCowGame()
+FBullCowGame::FBullCowGame() //default constructor
 {
-	Reset();
+	Reset(DEFAULT_WORD_LENGTH);
 }
 
-int32 FBullCowGame::GetMaxTries() const { return MyMaxTries; }
+FBullCowGame::FBullCowGame(int32 WordLength) {
+	Reset(WordLength);
+}
+
 int32 FBullCowGame::GetCurrentTry() const { return MyCurrentTry; }
 int32 FBullCowGame::GetHiddenWordLength() const{ return MyHiddenWord.length(); }
 bool FBullCowGame::IsGameWon() const {	return bGameIsWon;}
 
-void FBullCowGame::Reset()
+//difficulty and play tuning, the bigger the word length, the bigger the max tries
+int32 FBullCowGame::GetMaxTries() const { 
+	TMap<int32, int32> WordLengthToMaxTries{
+		{3,4},
+		{4,7},
+		{5,10},
+		{6,16},
+		{7,20},
+	};
+	
+	return WordLengthToMaxTries[MyHiddenWord.length()];
+}
+
+
+void FBullCowGame::Reset(int32 Length)
 {
-	constexpr int32 MAX_TRIES = 8;
 	const FString HIDDEN_WORD = "planet";
 
-	MyMaxTries = MAX_TRIES;
-	MyHiddenWord = HIDDEN_WORD;
+	MyHiddenWord = HiddenWordAccordingToWordLength(Length);
 	MyCurrentTry = 1;
 	bGameIsWon = false;
 	return;
 }
 
+FString FBullCowGame::HiddenWordAccordingToWordLength(int32 Length) const
+{
+	TMap<int32, FString> WordToWordLength{
+	{ 3,"ant" },
+	{ 4, "mate" },
+	{ 5, "plane" },
+	{ 6, "planet" },
+	{ 7, "isogram" },
+	};
 
+	return WordToWordLength[Length];
+}
+
+bool FBullCowGame::IsNumber(FString String) const
+{
+	try {
+		std::stoi(String);
+	}
+	catch (std::invalid_argument e) {
+		return false;
+	}
+	
+	return true;
+}
 
 EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
 {
@@ -32,7 +71,7 @@ EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
 		return EGuessStatus::Not_Isogram; 
 	}
 	else if (!IsLowerCase(Guess)) {	//if the guess isn't all lowercase 
-		return EGuessStatus::Not_Lowercase; //TODO write method or function
+		return EGuessStatus::Not_Lowercase; 
 	}
 	else if (GetHiddenWordLength() != Guess.length()) {	//if the guess length is wrong
 		return EGuessStatus::Wrong_Length;
@@ -41,6 +80,25 @@ EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
 		return EGuessStatus::OK;
 	}
 
+}
+
+EWordLengthInputStatus FBullCowGame::CheckWordLengthValidity(FString String) const
+{
+	if (String.empty()) {
+		return EWordLengthInputStatus::Empty;
+	}
+	else if (!IsNumber(String)) {
+		return EWordLengthInputStatus::Not_number;
+	}
+	else {
+		//if it arrives here, it's because it's a number 
+		int32 Length = std::stoi(String);
+		if (Length < 3 || Length > 7) {
+			return EWordLengthInputStatus::Out_of_bounds_number;
+		}
+	}
+
+	return EWordLengthInputStatus::OK;
 }
 
 //receives a VALID guess, increments turn, and returns count
