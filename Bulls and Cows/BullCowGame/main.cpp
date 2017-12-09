@@ -2,13 +2,17 @@
 This is the console executable that makes use of the BullCowClass.
 This acts as the view in a MVC pattern, and is responsible for all user interaction. For game logic, see the FBullCowGame class.
 */
+#pragma once
+
 #include <iostream>
 #include <string>
 #include "FBullCowGame.h"
 
+//to make syntax Unreal friendly
 using FText = std::string;
 using int32 = int;
 
+//function prototypes as outside a class
 void PrintIntro();
 void PlayGame();
 bool AskToPlayAgain();
@@ -16,7 +20,7 @@ FText GetValidGuess();
 void PrintGameSummary();
 int32 GetValidUserWordLength();
 
-FBullCowGame BCGame;	//instantiate a new game
+FBullCowGame BCGame;	//instantiate a new game, which we re-use across plays
 
 //the entry point for our application
 int main() {
@@ -31,10 +35,8 @@ int main() {
 	return 0;
 }
 
-
-
 void PrintIntro() {
-	//Introduce the game
+
 	std::cout << "Welcome to Bulls and Cows, a fun word game.\n";
 	std::cout << std::endl;
 	std::cout << "          }   {         ___ " << std::endl;
@@ -50,6 +52,7 @@ void PrintIntro() {
 	return;
 }
 
+//plays a single game to completion 
 void PlayGame() {
 
 	int32 WordLength = GetValidUserWordLength();
@@ -76,6 +79,7 @@ void PlayGame() {
 }
 
 bool AskToPlayAgain() {
+
 	std::cout << "Do you want to play again? (y/n)";
 	FText Response = "";
 	std::getline(std::cin, Response);
@@ -84,8 +88,8 @@ bool AskToPlayAgain() {
 }
 
 //loop continually until the user gives valid input
-FText GetValidGuess()
-{
+FText GetValidGuess() {
+
 	EGuessStatus Status = EGuessStatus::Invalid_Status;
 	FText Guess = "";
 
@@ -113,11 +117,12 @@ FText GetValidGuess()
 			break;
 		}
 	} while (Status != EGuessStatus::OK); //keep looping until we get a valid input
-	return Guess;
 
+	return Guess;
 }
 
 void  PrintGameSummary() {
+
 	if (BCGame.IsGameWon()) {
 		std::cout << "Well done! You won this game, bruv!\n";
 	}
@@ -128,9 +133,9 @@ void  PrintGameSummary() {
 	return;
 }
 
-//gets valid word length from user
-int32 GetValidUserWordLength()
-{
+//loops until it gets valid word length from user
+int32 GetValidUserWordLength() {
+
 	EWordLengthInputStatus WordLengthStatus = EWordLengthInputStatus::Invalid_Status;
 	FString Input = "";
 	int32 Length = 0;
@@ -159,4 +164,5 @@ int32 GetValidUserWordLength()
 
 	return Length;
 }
+
 

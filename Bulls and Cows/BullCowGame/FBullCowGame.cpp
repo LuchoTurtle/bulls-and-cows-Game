@@ -1,13 +1,18 @@
+#pragma once
+
 #include "FBullCowGame.h"
 #include <map>
-#define TMap std::map
+
+//to make syntax Unreal friendly
+#define TMap std::map 
 #define DEFAULT_WORD_LENGTH 3
 
-FBullCowGame::FBullCowGame() //default constructor
-{
+//empty constructor
+FBullCowGame::FBullCowGame() {
 	Reset(DEFAULT_WORD_LENGTH);
 }
 
+//constructor
 FBullCowGame::FBullCowGame(int32 WordLength) {
 	Reset(WordLength);
 }
@@ -18,6 +23,7 @@ bool FBullCowGame::IsGameWon() const {	return bGameIsWon;}
 
 //difficulty and play tuning, the bigger the word length, the bigger the max tries
 int32 FBullCowGame::GetMaxTries() const { 
+
 	TMap<int32, int32> WordLengthToMaxTries{
 		{3,4},
 		{4,7},
@@ -30,9 +36,7 @@ int32 FBullCowGame::GetMaxTries() const {
 }
 
 
-void FBullCowGame::Reset(int32 Length)
-{
-	const FString HIDDEN_WORD = "planet";
+void FBullCowGame::Reset(int32 Length) {
 
 	MyHiddenWord = HiddenWordAccordingToWordLength(Length);
 	MyCurrentTry = 1;
@@ -40,8 +44,9 @@ void FBullCowGame::Reset(int32 Length)
 	return;
 }
 
-FString FBullCowGame::HiddenWordAccordingToWordLength(int32 Length) const
-{
+//the hidden word is different according to the user's desired word length
+FString FBullCowGame::HiddenWordAccordingToWordLength(int32 Length) const {
+
 	TMap<int32, FString> WordToWordLength{
 	{ 3,"ant" },
 	{ 4, "mate" },
@@ -53,8 +58,8 @@ FString FBullCowGame::HiddenWordAccordingToWordLength(int32 Length) const
 	return WordToWordLength[Length];
 }
 
-bool FBullCowGame::IsNumber(FString String) const
-{
+bool FBullCowGame::IsNumber(FString String) const {
+
 	try {
 		std::stoi(String);
 	}
@@ -65,8 +70,8 @@ bool FBullCowGame::IsNumber(FString String) const
 	return true;
 }
 
-EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
-{
+EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const {
+
 	if (!IsIsogram(Guess)) {	//if the guess isn't an isogram, 
 		return EGuessStatus::Not_Isogram; 
 	}
@@ -82,8 +87,9 @@ EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
 
 }
 
-EWordLengthInputStatus FBullCowGame::CheckWordLengthValidity(FString String) const
-{
+//checks if user's input after he's asked for desired word length is valid
+EWordLengthInputStatus FBullCowGame::CheckWordLengthValidity(FString String) const {
+
 	if (String.empty()) {
 		return EWordLengthInputStatus::Empty;
 	}
@@ -102,8 +108,8 @@ EWordLengthInputStatus FBullCowGame::CheckWordLengthValidity(FString String) con
 }
 
 //receives a VALID guess, increments turn, and returns count
-FBullCowCount FBullCowGame::SubmitValidGuess(FString Guess)
-{
+FBullCowCount FBullCowGame::SubmitValidGuess(FString Guess) {
+
 	MyCurrentTry++;
 	FBullCowCount BullCowCount;
 
@@ -135,8 +141,8 @@ FBullCowCount FBullCowGame::SubmitValidGuess(FString Guess)
 	return BullCowCount;
 }
 
-bool FBullCowGame::IsIsogram(FString Word) const
-{
+bool FBullCowGame::IsIsogram(FString Word) const {
+
 	//treat 0 and 1 letter strings as isograms
 	if (Word.length() < 2) {
 		return true;
@@ -157,8 +163,7 @@ bool FBullCowGame::IsIsogram(FString Word) const
 	return true;
 }
 
-bool FBullCowGame::IsLowerCase(FString Word) const
-{
+bool FBullCowGame::IsLowerCase(FString Word) const {
 
 	for (auto Letter : Word) { //run through every letter
 		if (!islower(Letter)) {

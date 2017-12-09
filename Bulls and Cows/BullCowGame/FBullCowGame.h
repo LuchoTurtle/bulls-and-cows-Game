@@ -1,6 +1,10 @@
+/*The game logic (no view code or direct user interaction)
+The game is a simple guess word game based on Mastermind*/
+
 #pragma once
 #include <string>
 
+//to make syntax Unreal friendly
 using FString = std::string;
 using int32 = int;
 
@@ -17,6 +21,7 @@ enum class EGuessStatus {
 	Not_Lowercase
 };
 
+//status after getting a user input after he's asked about the desired word length 
 enum class EWordLengthInputStatus {
 	Invalid_Status,
 	Empty,
@@ -37,7 +42,7 @@ public:
 	EGuessStatus CheckGuessValidity(FString) const; 
 	EWordLengthInputStatus CheckWordLengthValidity(FString) const;
 
-	void Reset(int32); //TODO make a more rich return value.
+	void Reset(int32);
 	FBullCowCount SubmitValidGuess(FString);
 
 private:
